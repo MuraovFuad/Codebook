@@ -1,16 +1,18 @@
 /* eslint-disable react/prop-types */
-import { createContext, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
 import { cartReducer } from "../reducer/cartReducer";
 
 const cartInitialState = {
-  cartList: [],
+  cartList: JSON.parse(localStorage.getItem("cartList")) || [],
   total: 0,
 };
 
 export const CartContext = createContext(cartInitialState);
-
 export const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, cartInitialState);
+  useEffect(() => {
+    localStorage.setItem("cartList", JSON.stringify(state.cartList));
+  }, [state.cartList]);
 
   function addToCart(product) {
     const updatedList = state.cartList.concat(product);
